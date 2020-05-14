@@ -58,4 +58,8 @@
       readOnly: true
     {{- end }}
     {{- end }}
+    - name: api-key
+      mountPath: /etc/api-key
+      subPath: api-key
+      readOnly: true
 {{- end -}}

@@ -34,11 +34,8 @@ spec:
         image: "{{ .Values.clusterChecksRunner.image.repository }}:{{ .Values.clusterChecksRunner.image.tag }}"
         imagePullPolicy: {{ .Values.clusterChecksRunner.image.pullPolicy }}
         env:
-          - name: DD_API_KEY
-            valueFrom:
-              secretKeyRef:
-                name: {{ template "datadog.apiSecretName" . }}
-                key: api-key
+          - name: DD_API_KEY_FILE
+            value: /etc/api-key
           - name: DD_EXTRA_CONFIG_PROVIDERS
             value: "clusterchecks endpointschecks"
           - name: DD_HEALTH_PORT
@@ -74,6 +71,7 @@ spec:
         volumeMounts:
           - {name: s6-run, mountPath: /var/run/s6}
           - {name: remove-corechecks, mountPath: /etc/datadog-agent/conf.d}
+          - {name: api-key, mountPath: /etc/api-key, subPath: api-key, readOnly: true}
 {{- if .Values.clusterChecksRunner.livenessProbe }}
         livenessProbe:
 {{ toYaml .Values.clusterChecksRunner.livenessProbe | indent 10 }}
@@ -91,6 +89,7 @@ spec:
       volumes:
         - {name: s6-run, emptyDir: {}}
         - {name: remove-corechecks, emptyDir: {}}
+        - {name: api-key, secret: { secretName: {{ template "datadog.apiSecretName" . }} }}
       affinity:
 {{- if .Values.clusterChecksRunner.affinity }}
 {{ toYaml .Values.clusterChecksRunner.affinity | indent 8 }}

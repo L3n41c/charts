@@ -112,6 +112,9 @@ spec:
 {{- if .Values.agents.volumes }}
 {{ toYaml .Values.agents.volumes | indent 6 }}
 {{- end }}
+      - name: api-key
+        secret:
+          secretName: {{ template "datadog.apiSecretName" . }}
       tolerations:
       {{- if eq .Values.targetSystem "windows" }}
       - effect: NoSchedule

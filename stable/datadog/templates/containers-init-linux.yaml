@@ -35,6 +35,10 @@
     - name: runtimesocketdir
       mountPath: {{ print "/host/" (dir (include "datadog.dockerOrCriSocketPath" .)) | clean }}
       readOnly: true
+    - name: api-key
+      mountPath: /etc/api-key
+      subPath: api-key
+      readOnly: true
   env:
     {{- include "containers-common-env" . | nindent 4 }}
     {{- if and (not .Values.clusterAgent.enabled) .Values.datadog.leaderElection }}

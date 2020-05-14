@@ -148,6 +148,10 @@
       readOnly: true
     {{- end }}
     {{- end }}
+    - name: api-key
+      mountPath: /etc/api-key
+      subPath: api-key
+      readOnly: true
 {{- if .Values.agents.volumeMounts }}
 {{ toYaml .Values.agents.volumeMounts | indent 4 }}
 {{- end }}

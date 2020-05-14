@@ -1,11 +1,8 @@
 # The purpose of this template is to define a minimal set of environment
 # variables required to operate dedicated containers in the daemonset.
 {{- define "containers-common-env" -}}
-- name: DD_API_KEY
-  valueFrom:
-    secretKeyRef:
-      name: {{ template "datadog.apiSecretName" . }}
-      key: api-key
+- name: DD_API_KEY_FILE
+  value: /etc/api-key
 {{- if semverCompare "^1.7-0" .Capabilities.KubeVersion.GitVersion }}
 - name: DD_KUBERNETES_KUBELET_HOST
   valueFrom:

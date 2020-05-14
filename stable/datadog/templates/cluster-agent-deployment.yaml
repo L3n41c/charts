@@ -85,12 +85,8 @@ spec:
         env:
           - name: DD_HEALTH_PORT
             value: {{ .Values.clusterAgent.healthPort | quote }}
-          - name: DD_API_KEY
-            valueFrom:
-              secretKeyRef:
-                name: {{ template "datadog.apiSecretName" . }}
-                key: api-key
-                optional: true
+          - name: DD_API_KEY_FILE
+            value: /etc/api-key
           {{- if .Values.clusterAgent.metricsProvider.enabled }}
           - name: DD_APP_KEY
             valueFrom:
@@ -175,6 +171,10 @@ spec:
             subPath: datadog-cluster.yaml
             readOnly: true
 {{- end}}
+          - name: api-key
+            mountPath: /etc/api-key
+            subPath: api-key
+            readOnly: true
       volumes:
 {{- if .Values.clusterAgent.confd }}
         - name: confd
@@ -186,6 +186,9 @@ spec:
           configMap:
             name: {{ template "datadog.fullname" . }}-cluster-agent-config
 {{- end}}
+        - name: api-key
+          secret:
+            secretName: {{ template "datadog.apiSecretName" . }}
 
 {{- if .Values.clusterAgent.volumes }}
 {{ toYaml .Values.clusterAgent.volumes | indent 8 }}

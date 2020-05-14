@@ -46,6 +46,10 @@
     - name: runtimesocket
       mountPath: {{ template "datadog.dockerOrCriSocketPath" . }}
     {{- end }}
+    - name: api-key
+      mountPath: /etc/api-key
+      subPath: api-key
+      readOnly: true
   livenessProbe:
 {{ toYaml .Values.agents.containers.traceAgent.livenessProbe | indent 4 }}
 {{- end -}}
